@@ -23,12 +23,15 @@ module.exports = {
   },
 
   getERData: async (ctx) => {
-    const { models} = strapi;
+    let { models } = strapi;
+    const pluginModels = { models } = strapi.plugins['content-rules'];
+    models = { ...models, pluginModels }
     const data = [];
     Object.keys(models).forEach(modelKey => {
       const model = models[modelKey];
       data.push({name: model.info.name, attributes: model.attributes, key:modelKey});
     });
+
     userPermissionModels.forEach(name => {
       const model = strapi.query(name, 'users-permissions').model;
       data.push({name: name, attributes: model.attributes, key:model.info.name});
